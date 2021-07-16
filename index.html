@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock</title>
+    <style>
+        body{
+            overflow:hidden;
+        }
+        #canvas{
+            background-color: black;
+            margin:-8px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+</body>
+<script>
+
+    const canvas=document.querySelector("#canvas");
+    const ctx=canvas.getContext("2d");
+    var radius;
+    var wheight=window.innerHeight
+    var wwidth=window.innerWidth;
+    canvas.height=wheight;
+    canvas.width=wwidth;
+
+    window.addEventListener("resize",()=>{
+        wheight=window.innerHeight;
+        wwidth=window.innerWidth;
+        canvas.height=wheight;
+        canvas.width=wwidth;
+        draw();
+    });
+
+    function draw(){
+        radius=wwidth<wheight?wwidth:wheight;
+        face();
+        numbers();
+        hands();
+    }
+
+    function face(){
+        ctx.lineWidth=10;
+        ctx.beginPath();
+        ctx.fillStyle="white";
+        ctx.arc(wwidth/2,wheight/2,radius*0.4,0,2*Math.PI);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(wwidth/2,wheight/2,radius*0.05,0,2*Math.PI);
+        ctx.fillStyle="black";
+        ctx.fill();
+    }
+
+    function numbers(){
+        ctx.beginPath();
+        ctx.font="50px Arial";
+        ctx.translate(wwidth/2,wheight/2);
+        ctx.textBaseline="middle";
+        ctx.textAlign="center";
+        for(var i=1;i<13;i++)
+        {
+            var ang=i*Math.PI/6;
+            ctx.rotate(ang);
+            ctx.translate(0,-radius*0.32);
+            ctx.rotate(-ang);
+            ctx.fillText(i,0,0);
+            ctx.rotate(ang);
+            ctx.translate(0,radius*0.32);
+            ctx.rotate(-ang);
+        }
+        ctx.translate(-wwidth/2,-wheight/2);
+    }
+
+    function hands(){
+        ctx.translate(wwidth/2,wheight/2);
+        const d = new Date();
+        const hours=d.getHours()%12;
+        var minutes=d.getMinutes()%60;
+        var seconds=d.getSeconds();
+        console.log(seconds);
+        var ang=hours*Math.PI/6;
+
+         //hour hand
+        ctx.beginPath();
+        ctx.lineWidth=15;
+        ctx.moveTo(0,0);
+        ctx.rotate(ang);
+        ctx.lineTo(0,-radius*0.22);
+        ctx.stroke();
+        ctx.moveTo(0,0);
+        ctx.rotate(-ang);
+        
+        //minute hand
+        minutes=minutes/30;
+        ang=minutes*Math.PI;
+        ctx.beginPath();
+        ctx.lineWidth=12;
+        ctx.moveTo(0,0);
+        ctx.rotate(ang);
+        ctx.lineTo(0,-radius*0.25);
+        ctx.stroke();
+        ctx.moveTo(0,0);
+        ctx.rotate(-ang);
+
+        //second hand
+        seconds=seconds/30;
+        ang=seconds*Math.PI;
+        ctx.beginPath();
+        ctx.lineWidth=10;
+        ctx.moveTo(0,0);
+        ctx.rotate(ang);
+        ctx.lineTo(0,-radius*0.3);
+        ctx.stroke();
+        ctx.moveTo(0,0);
+        ctx.rotate(-ang);
+
+        ctx.translate(-wwidth/2,-wheight/2);
+    }
+    draw();
+    setInterval(draw,1000);
+</script>
+</html>
